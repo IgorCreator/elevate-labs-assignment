@@ -29,44 +29,44 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 0. Project Setup
+## [x] 0. Project Setup
 
-- [ ] 0.1 Initialize new Rails project (API mode, Ruby 3.3.5)
-- [ ] 0.2 Commit credentials/configuration files (e.g., `config/master.key` or `.env`)
-- [ ] 0.3 Document how to obtain and use credentials for local development
-- [ ] 0.4 Set up PostgreSQL (or preferred DB)
-- [ ] 0.5 Configure RSpec for testing
-- [ ] 0.6 Set up FactoryBot and Faker for test data
-- [ ] 0.7 Configure Rubocop or other linter
-- [ ] 0.8 Add gems for authentication (e.g., bcrypt, JWT)
-- [ ] 0.9 Set up dotenv or credentials for secrets
-- [ ] 0.10 Create initial README with setup instructions
-- [ ] 0.11 Add CORS configuration if needed for mobile app (optional)
-- [ ] 0.12 Set up Redis for caching subscription status
-- [ ] 0.13 Set up admin authentication (e.g., Devise or custom solution)
+- [x] 0.1 Initialize new Rails project (API mode, Ruby 3.3.5)
+- [x] 0.2 Commit credentials/configuration files (e.g., `config/master.key` or `.env`)
+- [x] 0.3 Document how to obtain and use credentials for local development
+- [x] 0.4 Set up PostgreSQL (or preferred DB)
+- [x] 0.5 Configure RSpec for testing
+- [x] 0.6 Set up FactoryBot and Faker for test data
+- [x] 0.7 Configure Rubocop or other linter
+- [x] 0.8 Add gems for authentication (e.g., bcrypt, JWT)
+- [x] 0.9 Set up dotenv or credentials for secrets
+- [x] 0.10 Create initial README with setup instructions
+- [x] 0.11 Add CORS configuration if needed for mobile app (optional)
+- [x] 0.12 Set up Redis for caching subscription status
+- [x] 0.13 Set up admin authentication (e.g., Devise or custom solution)
 
 ---
 
-## [ ] 1. Phase 1 - Sign-up and Authentication
+## [x] 1. Phase 1 - Sign-up and Authentication
 
-- [ ] 1.1 Generate User model with email and password_digest
-- [ ] 1.2 Add migration for users table
-- [ ] 1.3 Add validations for email (case-insensitive uniqueness, format) and password (min 8 chars, must include symbol)
-- [ ] 1.4 Implement password hashing (bcrypt): following best practices for security
-- [ ] 1.5 Create signup endpoint: `POST /api/user`
-- [ ] 1.6 Parse and validate JSON payload for signup
-- [ ] 1.7 Return 201 Created on success, with user info (no password)
-- [ ] 1.8 Create login endpoint: `POST /api/sessions`
-- [ ] 1.9 Authenticate user credentials and return JWT token
-- [ ] 1.10 Implement JWT token generation and signing (12h expiration)
-- [ ] 1.11 Restrict subsequent API requests to authenticated users (JWT auth filter)
-- [ ] 1.12 Handle authentication errors (invalid credentials, missing token)
-- [ ] 1.13 Ensure all API responses use JSON content type
+- [x] 1.1 Generate User model with email and password_digest
+- [x] 1.2 Add migration for users table
+- [x] 1.3 Add validations for email (case-insensitive uniqueness, format) and password (min 8 chars, must include symbol)
+- [x] 1.4 Implement password hashing (bcrypt): following best practices for security
+- [x] 1.5 Create signup endpoint: `POST /api/user`
+- [x] 1.6 Parse and validate JSON payload for signup
+- [x] 1.7 Return 201 Created on success, with user info (no password)
+- [x] 1.8 Create login endpoint: `POST /api/sessions`
+- [x] 1.9 Authenticate user credentials and return JWT token
+- [x] 1.10 Implement JWT token generation and signing (12h expiration)
+- [x] 1.11 Restrict subsequent API requests to authenticated users (JWT auth filter)
+- [x] 1.12 Handle authentication errors (invalid credentials, missing token)
+- [x] 1.13 Ensure all API responses use JSON content type
 - [ ] 1.14 Implement rate limiting and brute-force protection on login endpoint
-- [ ] 1.15 Protect against SQL injection and excessive retries
+- [x] 1.15 Protect against SQL injection and excessive retries
 - [ ] 1.16 Implement token invalidation (logout endpoint)
-- [ ] 1.17 Assume HTTPS for all endpoints (document in README)
-- [ ] 1.18 Update README with key design decisions and brief architectural/implementation explanations for Phase 1
+- [x] 1.17 Assume HTTPS for all endpoints (document in README)
+- [x] 1.18 Update README with key design decisions and brief architectural/implementation explanations for Phase 1
 
 ---
 
