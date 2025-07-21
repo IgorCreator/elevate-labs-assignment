@@ -1,2 +1,5 @@
 /.history
 assignment.md
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
