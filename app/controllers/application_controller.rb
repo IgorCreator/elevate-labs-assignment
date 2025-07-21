@@ -34,7 +34,6 @@ class ApplicationController < ActionController::API
     auth_header = request.headers["Authorization"]
     return nil unless auth_header
 
-    # Extract token from "Bearer <token>" format
     auth_header.split(" ").last if auth_header.start_with?("Bearer ")
   end
 end

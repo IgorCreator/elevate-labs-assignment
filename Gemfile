@@ -57,6 +57,9 @@ group :development, :test do
   # Faker for generating fake data
   gem 'faker'
 
+  # Shoulda matchers for cleaner model tests
+  gem 'shoulda-matchers', '~> 5.0'
+
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 

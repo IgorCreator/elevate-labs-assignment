@@ -25,7 +25,7 @@ The following games and categories are used for validation and admin UI:
 - Retention (Memory)
 - Focus (Concentration)
 - Name Recall (Memory)
-- Others: (to be expanded as needed from Elevate’s 40+ games)
+- Others: (to be expanded as needed from Elevate's 40+ games)
 
 ---
 
@@ -70,18 +70,18 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 2. Phase 2 - Game Completion Ingestion
+## [x] 2. Phase 2 - Game Completion Ingestion
 
-- [ ] 2.1 Generate GameEvent model (user_id, game_name, type, occurred_at)
-- [ ] 2.2 Add migration for game_events table
-- [ ] 2.3 Add validation for type (only accept "COMPLETED")
-- [ ] 2.4 Maintain a list of valid game names (see above)
-- [ ] 2.5 Validate occurred_at (not in future, reasonable past)
-- [ ] 2.6 Create endpoint: `POST /api/user/game_events`
-- [ ] 2.7 Parse and validate JSON payload for game event
-- [ ] 2.8 Associate game event with authenticated user
-- [ ] 2.9 Return appropriate response (201 Created or error)
-- [ ] 2.10 Update README with key design decisions and brief architectural/implementation explanations for Phase 2
+- [x] 2.1 Generate GameEvent model (user_id, game_name, event_type, occurred_at)
+- [x] 2.2 Add migration for game_events table
+- [x] 2.3 Add validation for event_type (only accept "COMPLETED")
+- [x] 2.4 Maintain a list of valid game names (see above)
+- [x] 2.5 Validate occurred_at (not in future, reasonable past)
+- [x] 2.6 Create endpoint: `POST /api/user/game_events`
+- [x] 2.7 Parse and validate JSON payload for game event
+- [x] 2.8 Associate game event with authenticated user
+- [x] 2.9 Return appropriate response (201 Created or error)
+- [x] 2.10 Update README with key design decisions and brief architectural/implementation explanations for Phase 2
 
 ---
 
@@ -135,14 +135,14 @@ The following games and categories are used for validation and admin UI:
 
 ## [ ] 7. Testing Checklist
 
-- [ ] 7.1 Write model specs (User, GameEvent)
-- [ ] 7.2 Write request specs for all endpoints
-- [ ] 7.3 Test authentication (valid/invalid tokens, login/signup, token expiration, logout, admin auth)
-- [ ] 7.4 Test game event ingestion (valid/invalid payloads, valid/invalid game names, occurred_at validation)
+- [x] 7.1 Write model specs (User, GameEvent)
+- [x] 7.2 Write request specs for game events endpoint
+- [x] 7.3 Test authentication (valid/invalid tokens, login/signup)
+- [x] 7.4 Test game event ingestion (valid/invalid payloads, valid/invalid game names, occurred_at validation)
 - [ ] 7.5 Test user stats calculation (total and per-game)
 - [ ] 7.6 Test subscription status integration (success, not_found, intermittent failure, caching)
 - [ ] 7.7 Test admin UI and endpoints (CRUD, access control)
-- [ ] 7.8 Add factories for test data
+- [x] 7.8 Add factories for test data
 - [ ] 7.9 Run all tests and ensure green
 - [ ] 7.10 Manual API testing (curl/Postman)
 - [ ] 7.11 Review test coverage and edge cases

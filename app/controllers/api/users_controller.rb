@@ -20,8 +20,6 @@ class Api::UsersController < ApplicationController
   end
 
   def show
-    # Will be implemented in Phase 3
-    # This endpoint will return user details with stats and subscription status
     render json: { message: "User details endpoint - to be implemented in Phase 3" }
   end
 

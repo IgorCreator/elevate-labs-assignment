@@ -1,12 +1,8 @@
 class JwtService
-  # JWT secret key from Rails credentials
   SECRET_KEY = Rails.application.credentials.secret_key_base || "fallback_secret_for_dev"
-
-  # Token expiration time (12 hours)
   EXPIRATION_TIME = 12.hours.from_now
 
   def self.encode(payload)
-    # Add expiration time to payload
     payload[:exp] = EXPIRATION_TIME.to_i
     JWT.encode(payload, SECRET_KEY, "HS256")
   end
