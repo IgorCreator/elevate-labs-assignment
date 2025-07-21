@@ -85,14 +85,14 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 3. Phase 3 - User Details and Stats
+## [x] 3. Phase 3 - User Details and Stats
 
-- [ ] 3.1 Create endpoint: `GET /api/user`
-- [ ] 3.2 Return user details (id, email)
-- [ ] 3.3 Calculate and return user stats: total_games_played and per-game stats (only count COMPLETED events)
-- [ ] 3.4 Ensure endpoint is JWT-protected
-- [ ] 3.5 Handle errors (unauthorized, user not found)
-- [ ] 3.6 Update README with key design decisions and brief architectural/implementation explanations for Phase 3
+- [x] 3.1 Create endpoint: `GET /api/user`
+- [x] 3.2 Return user details (id, email)
+- [x] 3.3 Calculate and return user stats: total_games_played and per-game stats (only count COMPLETED events)
+- [x] 3.4 Ensure endpoint is JWT-protected
+- [x] 3.5 Handle errors (unauthorized, user not found)
+- [x] 3.6 Update README with key design decisions and brief architectural/implementation explanations for Phase 3
 
 ---
 
@@ -139,7 +139,7 @@ The following games and categories are used for validation and admin UI:
 - [x] 7.2 Write request specs for game events endpoint
 - [x] 7.3 Test authentication (valid/invalid tokens, login/signup)
 - [x] 7.4 Test game event ingestion (valid/invalid payloads, valid/invalid game names, occurred_at validation)
-- [ ] 7.5 Test user stats calculation (total and per-game)
+- [x] 7.5 Test user stats calculation (total and per-game)
 - [ ] 7.6 Test subscription status integration (success, not_found, intermittent failure, caching)
 - [ ] 7.7 Test admin UI and endpoints (CRUD, access control)
 - [x] 7.8 Add factories for test data

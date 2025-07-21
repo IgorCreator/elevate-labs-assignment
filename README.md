@@ -126,9 +126,29 @@ bundle exec rspec --format documentation
 }
 ```
 
-### User Data
+### User Data (Phase 3)
 
 - `GET /api/user` - Get user details, stats, and subscription status
+
+**Response Format:**
+
+```json
+{
+  "user": {
+    "id": 54321,
+    "email": "test@example.com",
+    "stats": {
+      "total_games_played": 5,
+      "games": {
+        "Brevity": 2,
+        "Focus": 1,
+        "Wordbend": 1,
+        "Retention": 1
+      }
+    }
+  }
+}
+```
 
 ### Admin (Phase 5)
 
@@ -227,11 +247,13 @@ curl -X POST http://localhost:3000/api/user/game_events \
 - Comprehensive test coverage including edge cases
 - Database optimizations with proper indexing
 
-### Phase 3 - User Stats (Planned)
+### Phase 3 - User Details and Stats ✅
 
-- GET endpoint for user details and stats
-- Total games played calculation
-- Per-game statistics
+- GET endpoint for user details and comprehensive stats
+- Total games played calculation from COMPLETED events
+- Per-game statistics with breakdown by game name
+- JWT authentication protection
+- Comprehensive error handling and edge cases
 
 ### Phase 4 - Subscription Status (Planned)
 
@@ -287,6 +309,6 @@ spec/
 - [x] **Phase 0**: Project Setup
 - [x] **Phase 1**: Sign-up and Authentication
 - [x] **Phase 2**: Game Completion Ingestion
-- [ ] **Phase 3**: User Details and Stats
+- [x] **Phase 3**: User Details and Stats
 - [ ] **Phase 4**: User Subscription Status
 - [ ] **Phase 5**: Admin UI & Endpoints

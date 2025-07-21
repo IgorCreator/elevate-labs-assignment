@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'jwt'
 
 RSpec.describe "Api::Users", type: :request do
   describe "POST /api/user" do
@@ -145,6 +146,148 @@ RSpec.describe "Api::Users", type: :request do
         decoded_token = JwtService.decode(token)
         expect(decoded_token).to be_present
         expect(decoded_token[:email]).to eq("test@example.com")
+      end
+    end
+  end
+
+  describe "GET /api/user" do
+    let(:user) { create(:user) }
+    let(:token) { JwtService.generate_token(user) }
+    let(:auth_headers) { { "Authorization" => "Bearer #{token}" } }
+
+    context "with valid authentication" do
+      context "user with no game events" do
+        it "returns user details with zero stats" do
+          get "/api/user", headers: auth_headers
+
+          expect(response).to have_http_status(:ok)
+
+          json_response = JSON.parse(response.body)
+          expect(json_response).to have_key("user")
+
+          user_data = json_response["user"]
+          expect(user_data["id"]).to eq(user.id)
+          expect(user_data["email"]).to eq(user.email)
+          expect(user_data["stats"]["total_games_played"]).to eq(0)
+          expect(user_data["stats"]["games"]).to eq({})
+        end
+      end
+
+      context "user with game events" do
+        before do
+          create(:game_event, user: user, game_name: "Brevity", event_type: "COMPLETED")
+          create(:game_event, user: user, game_name: "Brevity", event_type: "COMPLETED")
+          create(:game_event, user: user, game_name: "Focus", event_type: "COMPLETED")
+          create(:game_event, user: user, game_name: "Wordbend", event_type: "COMPLETED")
+        end
+
+        it "returns user details with calculated stats" do
+          get "/api/user", headers: auth_headers
+
+          expect(response).to have_http_status(:ok)
+
+          json_response = JSON.parse(response.body)
+          user_data = json_response["user"]
+
+          expect(user_data["id"]).to eq(user.id)
+          expect(user_data["email"]).to eq(user.email)
+          expect(user_data["stats"]["total_games_played"]).to eq(4)
+          expect(user_data["stats"]["games"]).to eq({
+            "Brevity" => 2,
+            "Focus" => 1,
+            "Wordbend" => 1
+          })
+        end
+
+        it "only counts COMPLETED event types" do
+          other_user = create(:user)
+          create(:game_event, user: other_user, game_name: "Brevity", event_type: "COMPLETED")
+
+          get "/api/user", headers: auth_headers
+
+          json_response = JSON.parse(response.body)
+          user_data = json_response["user"]
+
+          expect(user_data["stats"]["total_games_played"]).to eq(4)
+        end
+      end
+
+      context "user with mixed game data" do
+        before do
+          create(:game_event, :brevity_game, user: user)
+          create(:game_event, :focus_game, user: user)
+          create(:game_event, :recent, user: user, game_name: "Retention")
+          create(:game_event, :older, user: user, game_name: "Name Recall")
+        end
+
+        it "calculates stats correctly across all games" do
+          get "/api/user", headers: auth_headers
+
+          json_response = JSON.parse(response.body)
+          stats = json_response["user"]["stats"]
+
+          expect(stats["total_games_played"]).to eq(4)
+          expect(stats["games"]).to include(
+            "Brevity" => 1,
+            "Focus" => 1,
+            "Retention" => 1,
+            "Name Recall" => 1
+          )
+        end
+      end
+    end
+
+    context "without authentication" do
+      it "returns unauthorized when no token is provided" do
+        get "/api/user"
+
+        expect(response).to have_http_status(:unauthorized)
+
+        json_response = JSON.parse(response.body)
+        expect(json_response["error"]).to eq("Missing authorization token")
+      end
+
+      it "returns unauthorized when token is invalid" do
+        get "/api/user", headers: { "Authorization" => "Bearer invalid_token" }
+
+        expect(response).to have_http_status(:unauthorized)
+
+        json_response = JSON.parse(response.body)
+        expect(json_response["error"]).to eq("Invalid or expired token")
+      end
+
+      it "returns unauthorized when token is malformed" do
+        get "/api/user", headers: { "Authorization" => "InvalidFormat" }
+
+        expect(response).to have_http_status(:unauthorized)
+
+        json_response = JSON.parse(response.body)
+        expect(json_response["error"]).to eq("Missing authorization token")
+      end
+    end
+
+    context "edge cases" do
+      it "handles expired tokens" do
+        # Create a payload with past expiration
+        payload = { user_id: user.id, exp: 1.hour.ago.to_i }
+        expired_token = JWT.encode(payload, JwtService::SECRET_KEY, 'HS256')
+
+        get "/api/user", headers: { "Authorization" => "Bearer #{expired_token}" }
+
+        expect(response).to have_http_status(:unauthorized)
+
+        json_response = JSON.parse(response.body)
+        expect(json_response["error"]).to eq("Invalid or expired token")
+      end
+
+      it "handles user not found scenario" do
+        non_existent_user_id = User.maximum(:id).to_i + 1
+        payload = { user_id: non_existent_user_id }
+        token_for_deleted_user = JWT.encode(payload, JwtService::SECRET_KEY, 'HS256')
+
+        get "/api/user", headers: { "Authorization" => "Bearer #{token_for_deleted_user}" }
+
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
