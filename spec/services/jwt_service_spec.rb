@@ -61,7 +61,7 @@ RSpec.describe JwtService do
       it 'returns nil for expired token' do
         # Create expired token
         expired_payload = test_payload.merge(exp: 1.hour.ago.to_i)
-        expired_token = JWT.encode(expired_payload, JwtService::SECRET_KEY, 'HS256')
+        expired_token = JWT.encode(expired_payload, JwtService.send(:secret_key), 'HS256')
 
         decoded = JwtService.decode(expired_token)
         expect(decoded).to be_nil
@@ -72,7 +72,7 @@ RSpec.describe JwtService do
 
         # Test expired token
         expired_payload = test_payload.merge(exp: 1.hour.ago.to_i)
-        expired_token = JWT.encode(expired_payload, JwtService::SECRET_KEY, 'HS256')
+        expired_token = JWT.encode(expired_payload, JwtService.send(:secret_key), 'HS256')
         JwtService.decode(expired_token)
 
         expect(Rails.logger).to have_received(:info).with("JWT token expired")
@@ -125,18 +125,23 @@ RSpec.describe JwtService do
     end
   end
 
-  describe 'constants' do
-    it 'uses Rails secret key base as SECRET_KEY' do
-      expect(JwtService::SECRET_KEY).to eq(Rails.application.credentials.secret_key_base)
+  describe 'configuration' do
+    it 'reads secret key from environment variables' do
+      # Test with environment variable set
+      allow(ENV).to receive(:[]).with('JWT_SECRET_KEY').and_return('env_secret_key')
+      expect(JwtService.send(:secret_key)).to eq('env_secret_key')
     end
 
-    it 'has fallback secret for development' do
-      allow(Rails.application.credentials).to receive(:secret_key_base).and_return(nil)
+    it 'falls back to Rails credentials when ENV not set' do
+      # Test fallback to Rails credentials
+      allow(ENV).to receive(:[]).with('JWT_SECRET_KEY').and_return(nil)
+      expect(JwtService.send(:secret_key)).to eq(Rails.application.credentials.secret_key_base)
+    end
 
-      # Reload the constant (in a real scenario, this would require reloading the class)
-      stub_const('JwtService::SECRET_KEY', Rails.application.credentials.secret_key_base || 'fallback_secret_for_dev')
-
-      expect(JwtService::SECRET_KEY).to eq('fallback_secret_for_dev')
+    it 'reads expiration hours from environment variables' do
+      # Test with environment variable set
+      allow(ENV).to receive(:[]).with('JWT_EXPIRATION_HOURS').and_return('24')
+      expect(JwtService.send(:expiration_time)).to be_within(10.seconds).of(24.hours.from_now)
     end
   end
 end

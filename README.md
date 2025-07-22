@@ -34,7 +34,29 @@ ruby -v  # Should show 3.3.5
 bundle install
 ```
 
-### 2. Database Setup
+### 2. Environment Configuration
+
+This application follows **12-factor app principles** and loads configuration from environment variables:
+
+```bash
+# Copy environment template and configure
+cp .env.example .env
+
+# Edit .env with your actual values
+# The file contains all required configuration options
+```
+
+**Environment Variables:**
+
+- `JWT_SECRET_KEY` - **Optional** - Custom JWT secret (falls back to Rails secret)
+- `JWT_EXPIRATION_HOURS` - Token expiration time (default: 12)
+- `BILLING_SERVICE_BASE_URL` - External billing service URL
+- `BILLING_SERVICE_JWT_TOKEN` - Authentication token for billing service
+- `BILLING_SERVICE_CACHE_EXPIRATION_HOURS` - Cache duration (default: 24)
+
+**Note**: Most variables are optional with sensible defaults. Only `BILLING_SERVICE_JWT_TOKEN` needs to be configured for external service integration.
+
+### 3. Database Setup
 
 ```bash
 # Start PostgreSQL (if using Homebrew)
@@ -45,7 +67,7 @@ rails db:setup
 rails db:migrate
 ```
 
-### 3. Seed Test Data (Optional)
+### 4. Seed Test Data (Optional)
 
 Load sample users and game events for testing:
 
@@ -66,7 +88,7 @@ rails db:seed
 - Various timestamps (1 hour ago to 1 month ago)
 - Realistic usage patterns for testing
 
-### 4. Running the Application
+### 5. Running the Application
 
 ```bash
 # Start the server
@@ -145,7 +167,8 @@ bundle exec rspec --format documentation
         "Wordbend": 1,
         "Retention": 1
       }
-    }
+    },
+    "subscription_status": "active"
   }
 }
 ```
@@ -255,11 +278,13 @@ curl -X POST http://localhost:3000/api/user/game_events \
 - JWT authentication protection
 - Comprehensive error handling and edge cases
 
-### Phase 4 - Subscription Status (Planned)
+### Phase 4 - User Subscription Status ✅
 
-- External billing service integration
-- Subscription status caching with Redis
-- Graceful error handling for service failures
+- External billing service integration with proper authentication
+- Subscription status included in GET /api/user response
+- Comprehensive error handling for service failures and intermittent issues
+- 24-hour caching system for subscription status
+- Graceful degradation with proper error messages to clients
 
 ### Phase 5 - Admin Interface (Planned)
 
@@ -310,5 +335,5 @@ spec/
 - [x] **Phase 1**: Sign-up and Authentication
 - [x] **Phase 2**: Game Completion Ingestion
 - [x] **Phase 3**: User Details and Stats
-- [ ] **Phase 4**: User Subscription Status
+- [x] **Phase 4**: User Subscription Status
 - [ ] **Phase 5**: Admin UI & Endpoints

@@ -24,8 +24,10 @@ class ApplicationController < ActionController::API
 
     if @current_user.nil?
       render json: { error: "User not found" }, status: :unauthorized
-      nil
+      return
     end
+
+    @current_user
   end
 
   private

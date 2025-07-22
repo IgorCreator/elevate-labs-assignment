@@ -3,19 +3,11 @@ class Api::SessionsController < ApplicationController
     user = User.find_by(email: params[:email]&.downcase&.strip)
 
     if user&.authenticate(params[:password])
-      token = JwtService.generate_token(user)
-
-      render json: {
-        token: token,
-        user: {
-          id: user.id,
-          email: user.email
-        }
-      }, status: :ok
+      render json: ResponseFormatter.user_success(user, include_token: true),
+             status: :ok
     else
-      render json: {
-        error: "Invalid email or password"
-      }, status: :unauthorized
+      response = ResponseFormatter.error("Invalid email or password", :unauthorized)
+      render response
     end
   end
 end

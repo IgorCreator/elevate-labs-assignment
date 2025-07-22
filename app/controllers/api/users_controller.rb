@@ -5,46 +5,36 @@ class Api::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      token = JwtService.generate_token(@user)
-
-      render json: {
-        user: {
-          id: @user.id,
-          email: @user.email
-        },
-        token: token
-      }, status: :created
+      render json: ResponseFormatter.user_success(@user, include_token: true),
+             status: :created
     else
-      render json: {
-        errors: @user.errors.full_messages
-      }, status: :unprocessable_entity
+      response = ResponseFormatter.validation_errors(@user.errors)
+      render response
     end
   end
 
   def show
-    stats = calculate_user_stats(current_user)
+    stats = UserStatsService.calculate(current_user)
 
-    render json: {
-      user: {
-        id: current_user.id,
-        email: current_user.email,
-        stats: stats
+    begin
+      subscription_status = BillingService.get_subscription_status(current_user.id)
+
+      extra_data = {
+        stats: stats,
+        subscription_status: subscription_status
       }
-    }
+
+      render json: ResponseFormatter.user_success(current_user, extra_data: extra_data)
+
+    rescue BillingService::BillingServiceError => e
+      response = ResponseFormatter.billing_error(e, current_user.id)
+      render response
+    end
   end
 
   private
 
   def user_params
     params.permit(:email, :password, :password_confirmation)
-  end
-
-  def calculate_user_stats(user)
-    game_events = user.game_events.where(event_type: GameEvent::VALID_EVENT_TYPES)
-
-    {
-      total_games_played: game_events.count,
-      games: game_events.group(:game_name).count
-    }
   end
 end

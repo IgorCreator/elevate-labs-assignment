@@ -14,9 +14,9 @@ RSpec.describe GameEvent, type: :model do
     it { should validate_presence_of(:event_type) }
     it { should validate_presence_of(:occurred_at) }
 
-    describe "game_name validation" do
-      it "accepts valid game names" do
-        GameEvent::VALID_GAME_NAMES.each do |game_name|
+          describe "game_name validation" do
+        it "accepts valid game names" do
+          GameEvent::VALID_GAME_NAMES.each do |game_name|
           game_event = build(:game_event, user: user, game_name: game_name)
           expect(game_event).to be_valid
         end
@@ -68,13 +68,13 @@ RSpec.describe GameEvent, type: :model do
   end
 
   describe "constants" do
-    it "has the correct valid game names" do
-      expected_games = ["Brevity", "Wordbend", "Retention", "Focus", "Name Recall"]
+    it "has correct valid game names" do
+      expected_games = [ "Brevity", "Wordbend", "Retention", "Focus", "Name Recall" ]
       expect(GameEvent::VALID_GAME_NAMES).to eq(expected_games)
     end
 
-    it "has the correct valid event types" do
-      expect(GameEvent::VALID_EVENT_TYPES).to eq(["COMPLETED"])
+    it "has correct valid event types" do
+      expect(GameEvent::VALID_EVENT_TYPES).to eq([ "COMPLETED" ])
     end
   end
 end

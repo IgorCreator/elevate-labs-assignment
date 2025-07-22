@@ -96,15 +96,15 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 4. Phase 4 - User Subscription Status
+## [x] 4. Phase 4 - User Subscription Status
 
-- [ ] 4.1 Integrate with external billing service (GET https://interviews-accounts.elevateapp.com/api/v1/users/:user_id/billing)
-- [ ] 4.2 Add JWT authentication header to external request
-- [ ] 4.3 Handle intermittent failures (user_id=5, user_id>100 returns not_found)
-- [ ] 4.4 Parse and return subscription_status in user details response
-- [ ] 4.5 Handle and log errors from billing service gracefully; return error to client if service unavailable ("Service temporarily unavailable, internal team notified")
-- [ ] 4.6 Cache subscription status using Redis
-- [ ] 4.7 Update README with key design decisions and brief architectural/implementation explanations for Phase 4
+- [x] 4.1 Integrate with external billing service (GET https://interviews-accounts.elevateapp.com/api/v1/users/:user_id/billing)
+- [x] 4.2 Add JWT authentication header to external request
+- [x] 4.3 Handle intermittent failures (user_id=5, user_id>100 returns not_found)
+- [x] 4.4 Parse and return subscription_status in user details response
+- [x] 4.5 Handle and log errors from billing service gracefully; return error to client if service unavailable ("Service temporarily unavailable, internal team notified")
+- [x] 4.6 Cache subscription status using Redis
+- [x] 4.7 Update README with key design decisions and brief architectural/implementation explanations for Phase 4
 
 ---
 
@@ -140,7 +140,7 @@ The following games and categories are used for validation and admin UI:
 - [x] 7.3 Test authentication (valid/invalid tokens, login/signup)
 - [x] 7.4 Test game event ingestion (valid/invalid payloads, valid/invalid game names, occurred_at validation)
 - [x] 7.5 Test user stats calculation (total and per-game)
-- [ ] 7.6 Test subscription status integration (success, not_found, intermittent failure, caching)
+- [x] 7.6 Test subscription status integration (success, not_found, intermittent failure, caching)
 - [ ] 7.7 Test admin UI and endpoints (CRUD, access control)
 - [x] 7.8 Add factories for test data
 - [ ] 7.9 Run all tests and ensure green

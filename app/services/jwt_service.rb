@@ -1,15 +1,20 @@
 class JwtService
-  SECRET_KEY = Rails.application.credentials.secret_key_base || "fallback_secret_for_dev"
-  EXPIRATION_TIME = 12.hours.from_now
+  class << self
+    def generate_token(user)
+      encode({
+        user_id: user.id,
+        email: user.email,
+        iat: Time.current.to_i
+      })
+    end
 
-  def self.encode(payload)
-    payload[:exp] = EXPIRATION_TIME.to_i
-    JWT.encode(payload, SECRET_KEY, "HS256")
-  end
+    def encode(payload)
+      payload[:exp] = expiration_time.to_i
+      JWT.encode(payload, secret_key, algorithm)
+    end
 
-  def self.decode(token)
-    begin
-      decoded = JWT.decode(token, SECRET_KEY, true, { algorithm: "HS256" })
+    def decode(token)
+      decoded = JWT.decode(token, secret_key, true, { algorithm: algorithm })
       HashWithIndifferentAccess.new(decoded[0])
     rescue JWT::ExpiredSignature
       Rails.logger.info("JWT token expired")
@@ -18,13 +23,22 @@ class JwtService
       Rails.logger.info("JWT decode error: #{e.message}")
       nil
     end
-  end
 
-  def self.generate_token(user)
-    encode({
-      user_id: user.id,
-      email: user.email,
-      iat: Time.current.to_i
-    })
+    private
+
+    def secret_key
+      ENV["JWT_SECRET_KEY"] || Rails.application.credentials.secret_key_base
+    end
+
+    def expiration_time
+      hours = (ENV["JWT_EXPIRATION_HOURS"] ||
+               Rails.application.credentials.jwt&.dig(:expiration_hours) ||
+               12).to_i
+      hours.hours.from_now
+    end
+
+    def algorithm
+      "HS256"
+    end
   end
 end
