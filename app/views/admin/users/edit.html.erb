@@ -1,5 +1,14 @@
 <div class="admin-card">
-  <h2>✏️ Edit User: <%= @user.email %></h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>✏️ Edit User: <%= @user.email %></h2>
+
+    <%= form_with url: admin_user_path(@user), method: :post, local: true, style: "display: inline;" do |form| %>
+      <%= form.hidden_field :action_type, value: 'delete' %>
+      <%= form.submit "🗑️",
+                      class: "btn btn-sm btn-danger",
+                      data: { confirm: "Are you sure you want to delete user '#{@user.email}'? This action cannot be undone." } %>
+    <% end %>
+  </div>
 
   <%= form_with model: [:admin, @user], method: :post, local: true do |form| %>
     <% if @user.errors.any? %>

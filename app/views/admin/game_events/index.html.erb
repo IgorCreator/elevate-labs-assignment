@@ -59,6 +59,7 @@
             <%= link_to "👁️ View", admin_game_event_path(event), class: "btn btn-secondary btn-sm" %>
             <%= link_to "✏️ Edit", edit_admin_game_event_path(event), class: "btn btn-secondary btn-sm" %>
             <%= form_with url: admin_game_event_path(event), method: :post, local: true, style: "display: inline;" do |form| %>
+              <%= form.hidden_field :action_type, value: 'delete' %>
               <%= form.submit "🗑️",
                   class: "btn btn-outline-danger btn-sm",
                   title: "Delete game event",

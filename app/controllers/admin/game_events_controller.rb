@@ -59,7 +59,7 @@ class Admin::GameEventsController < Admin::BaseController
 
   def update
     # Check if this is actually a delete request
-    if params[:commit] == "Delete"
+    if params[:action_type] == "delete"
       event_details = { game_name: @game_event.game_name, user_email: @game_event.user.email }
       @game_event.destroy
       Logging::AdminActivityLoggerService.log_activity(

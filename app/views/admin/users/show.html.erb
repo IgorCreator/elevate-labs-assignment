@@ -131,9 +131,15 @@
     <% end %>
   </div>
 
-  <div style="margin-top: 2rem;">
+  <div style="margin-top: 2rem; display: flex; gap: 0.5rem; align-items: center;">
     <%= link_to "← Back to Users", admin_users_path, class: "btn btn-secondary" %>
     <%= link_to "Edit User", edit_admin_user_path(@user), class: "btn btn-primary" %>
+    <%= form_with url: admin_user_path(@user), method: :post, local: true, style: "display: inline;" do |form| %>
+      <%= form.hidden_field :action_type, value: 'delete' %>
+      <%= form.submit "🗑️",
+                      class: "btn btn-sm btn-danger",
+                      data: { confirm: "Are you sure you want to delete user '#{@user.email}'? This action cannot be undone." } %>
+    <% end %>
   </div>
 
   <% if @prev_user || @next_user %>

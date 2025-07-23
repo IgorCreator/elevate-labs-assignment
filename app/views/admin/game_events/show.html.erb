@@ -1,5 +1,14 @@
 <div class="admin-card">
-  <h2>🎮 Game Event Details</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>🎮 Game Event Details</h2>
+
+    <%= form_with url: admin_game_event_path(@game_event), method: :post, local: true, style: "display: inline;" do |form| %>
+      <%= form.hidden_field :action_type, value: 'delete' %>
+      <%= form.submit "🗑️",
+                      class: "btn btn-sm btn-danger",
+                      data: { confirm: "Are you sure you want to delete this game event?" } %>
+    <% end %>
+  </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
     <div>
@@ -41,12 +50,6 @@
     <div>
       <%= link_to "← Back to Game Events", admin_game_events_path, class: "btn btn-secondary" %>
       <%= link_to "Edit Event", edit_admin_game_event_path(@game_event), class: "btn btn-primary" %>
-      <%= form_with url: admin_game_event_path(@game_event), method: :post, local: true, style: "display: inline;" do |form| %>
-        <%= form.submit "🗑️",
-            class: "btn btn-outline-danger",
-            title: "Delete game event",
-            data: { confirm: "Are you sure you want to delete this game event?" } %>
-      <% end %>
     </div>
 
         <div style="display: flex; gap: 0.5rem;">

@@ -53,7 +53,7 @@ class Admin::UsersController < Admin::BaseController
 
   def update
     # Check if this is actually a delete request
-    if params[:commit] == "Delete"
+    if params[:action_type] == "delete"
       user_email = @user.email
       @user.destroy
       Logging::AdminActivityLoggerService.log_activity(

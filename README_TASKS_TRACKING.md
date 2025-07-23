@@ -138,7 +138,7 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 7. Testing Checklist
+## [x] 7. Testing Checklist
 
 - [x] 7.1 Write model specs (User, GameEvent)
 - [x] 7.2 Write request specs for game events endpoint
@@ -153,12 +153,12 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 8. Final Review & Polish
+## [x] 8. Final Review & Polish
 
-- [ ] 8.1 Review code for clarity and maintainability
-- [ ] 8.2 Ensure all checkboxes are addressed
-- [ ] 8.3 Update README with final instructions and notes
-- [ ] 8.5 Final commit and push
+- [x] 8.1 Review code for clarity and maintainability
+- [x] 8.2 Ensure all checkboxes are addressed
+- [x] 8.3 Update README with final instructions and notes
+- [x] 8.4 Final commit and push
 
 ---
 

@@ -150,4 +150,4 @@ This project implements all required phases from the assignment:
 - ✅ **Phase 5**: Admin interface
 - ✅ **Phase 6**: Code quality and documentation
 
-For detailed implementation information, see [ARCHITECTURE.md](ARCHITECTURE.md).
+For detailed step-by-step implementation, see [README_TASKS_TRACKING.md](README_TASKS_TRACKING.md).

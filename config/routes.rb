@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root to: redirect("/admin")
+
   namespace :api do
     post "user", to: "users#create"
     post "sessions", to: "sessions#create"
@@ -10,20 +12,18 @@ Rails.application.routes.draw do
   namespace :admin do
     get "/", to: "dashboard#index"
 
-    # Admin authentication
     get "login", to: "sessions#new"
     post "login", to: "sessions#create"
     post "logout", to: "sessions#destroy"
 
-                    # Admin CRUD resources
-                    resources :users, only: [ :index, :show, :new, :create, :edit ] do
-                  member do
-                    post :update
-                    post :destroy
-                    post :refresh_subscription
-                    post :clear_subscription_cache
-                  end
-                end
+    resources :users, only: [ :index, :show, :new, :create, :edit ] do
+      member do
+        post :update
+        post :destroy
+        post :refresh_subscription
+        post :clear_subscription_cache
+      end
+    end
     resources :game_events, only: [ :index, :show, :new, :create, :edit ] do
       member do
         post :update
@@ -31,7 +31,6 @@ Rails.application.routes.draw do
       end
     end
 
-    # Admin dashboard and stats
     get "stats", to: "dashboard#stats"
     get "logs", to: "dashboard#logs"
   end

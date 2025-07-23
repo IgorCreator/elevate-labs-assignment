@@ -1,5 +1,14 @@
 <div class="admin-card">
-  <h2>✏️ Edit Game Event</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>✏️ Edit Game Event</h2>
+
+    <%= form_with url: admin_game_event_path(@game_event), method: :post, local: true, style: "display: inline;" do |form| %>
+      <%= form.hidden_field :action_type, value: 'delete' %>
+      <%= form.submit "🗑️",
+                      class: "btn btn-sm btn-danger",
+                      data: { confirm: "Are you sure you want to delete this game event?" } %>
+    <% end %>
+  </div>
 
   <%= form_with model: [:admin, @game_event], method: :post, local: true do |form| %>
     <% if @game_event.errors.any? %>
