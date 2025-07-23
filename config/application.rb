@@ -40,5 +40,10 @@ module ElevateLabsAssignment
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Enable sessions for admin controllers
+    config.session_store :cookie_store, key: "_elevate_labs_session"
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use config.session_store, config.session_options
   end
 end

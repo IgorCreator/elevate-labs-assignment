@@ -1,0 +1,98 @@
+<div class="admin-card">
+  <h2>📋 Recent Activity Logs</h2>
+
+  <div style="margin-bottom: 1rem;">
+    <p>Showing the most recent activity across the platform. This includes user registrations and game events.</p>
+  </div>
+
+  <div style="max-height: 600px; overflow-y: auto;">
+    <% @recent_activity.each do |activity| %>
+      <div style="padding: 1rem; border-bottom: 1px solid #dee2e6; display: flex; align-items: center; gap: 1rem;">
+        <div style="min-width: 60px;">
+          <% case activity[:type] %>
+          <% when "user_registration" %>
+            <span style="font-size: 1.5rem;">👤</span>
+          <% when "game_event" %>
+            <span style="font-size: 1.5rem;">🎮</span>
+          <% when "api_request" %>
+            <span style="font-size: 1.5rem;">🌐</span>
+          <% when "admin_activity" %>
+            <span style="font-size: 1.5rem;">⚙️</span>
+          <% else %>
+            <span style="font-size: 1.5rem;">📝</span>
+          <% end %>
+        </div>
+
+        <div style="flex: 1;">
+          <div style="font-weight: 500; margin-bottom: 0.25rem;">
+            <%= activity[:message] %>
+          </div>
+          <div style="font-size: 0.875rem; color: #6c757d;">
+            <%= activity[:timestamp].strftime("%Y-%m-%d %H:%M:%S") %>
+          </div>
+        </div>
+
+        <div style="min-width: 100px;">
+          <% case activity[:type] %>
+          <% when "user_registration" %>
+            <span style="padding: 0.25rem 0.5rem; background-color: #d4edda; color: #155724; border-radius: 4px; font-size: 0.75rem;">
+              Registration
+            </span>
+          <% when "game_event" %>
+            <span style="padding: 0.25rem 0.5rem; background-color: #cce5ff; color: #004085; border-radius: 4px; font-size: 0.75rem;">
+              Game Event
+            </span>
+          <% when "api_request" %>
+            <% status_color = activity[:data][:status] == 200 ? "#d4edda" : "#f8d7da" %>
+            <% text_color = activity[:data][:status] == 200 ? "#155724" : "#721c24" %>
+            <span style="padding: 0.25rem 0.5rem; background-color: <%= status_color %>; color: <%= text_color %>; border-radius: 4px; font-size: 0.75rem;">
+              API <%= activity[:data][:status] %>
+            </span>
+          <% when "admin_activity" %>
+            <% action_color = activity[:data][:action] == "delete" ? "#f8d7da" : "#fff3cd" %>
+            <% text_color = activity[:data][:action] == "delete" ? "#721c24" : "#856404" %>
+            <span style="padding: 0.25rem 0.5rem; background-color: <%= action_color %>; color: <%= text_color %>; border-radius: 4px; font-size: 0.75rem;">
+              Admin <%= activity[:data][:action].titleize %>
+            </span>
+          <% else %>
+            <span style="padding: 0.25rem 0.5rem; background-color: #f8f9fa; color: #6c757d; border-radius: 4px; font-size: 0.75rem;">
+              Other
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @recent_activity.empty? %>
+    <div style="text-align: center; padding: 2rem; color: #6c757d;">
+      <p>No recent activity found.</p>
+    </div>
+  <% end %>
+</div>
+
+<div class="admin-card">
+  <h2>📊 Activity Summary</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number"><%= @recent_activity.count { |a| a[:type] == "admin_activity" } %></div>
+      <div class="stat-label">Admin Activities</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @recent_activity.count { |a| a[:type] == "api_request" } %></div>
+      <div class="stat-label">API Requests</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @recent_activity.count { |a| a[:type] == "user_registration" } %></div>
+      <div class="stat-label">User Registrations</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @recent_activity.count { |a| a[:type] == "game_event" } %></div>
+      <div class="stat-label">Game Events</div>
+    </div>
+  </div>
+</div>

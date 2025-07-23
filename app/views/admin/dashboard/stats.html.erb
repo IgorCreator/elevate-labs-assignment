@@ -1,0 +1,108 @@
+<div class="admin-card">
+  <h2>📊 User Statistics & Analytics</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number"><%= @users.count %></div>
+      <div class="stat-label">Total Users</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @user_stats.count { |s| s[:subscription_status] == "active" } %></div>
+      <div class="stat-label">Active Subscriptions</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @user_stats.count { |s| s[:stats][:total_games_played] > 0 } %></div>
+      <div class="stat-label">Users Who Played Games</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @user_stats.sum { |s| s[:stats][:total_games_played] } %></div>
+      <div class="stat-label">Total Games Played</div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <h2>🎮 Game Statistics</h2>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div>
+      <h3>Games by Popularity</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Game</th>
+            <th>Times Completed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @game_stats.sort_by { |game, count| -count }.each do |game, count| %>
+            <tr>
+              <td><%= game %></td>
+              <td><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>Event Types</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Event Type</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @event_stats.each do |event_type, count| %>
+            <tr>
+              <td><%= event_type %></td>
+              <td><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <h2>👥 Detailed User Statistics</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Total Games</th>
+        <th>Unique Games</th>
+        <th>Subscription Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @user_stats.each do |user_stat| %>
+        <tr>
+          <td><%= user_stat[:user].email %></td>
+          <td><%= user_stat[:stats][:total_games_played] %></td>
+          <td><%= user_stat[:stats][:games]&.keys&.count || 0 %></td>
+          <td>
+            <span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem;
+                         background-color: <%= user_stat[:subscription_status] == "active" ? "#d4edda" :
+                                               user_stat[:subscription_status] == "expired" ? "#e9ecef" : "#f8d7da" %>;
+                         color: <%= user_stat[:subscription_status] == "active" ? "#155724" :
+                                   user_stat[:subscription_status] == "expired" ? "#495057" : "#721c24" %>;">
+              <%= user_stat[:subscription_status] %>
+            </span>
+          </td>
+          <td>
+            <%= link_to "View Details", admin_user_path(user_stat[:user]), class: "btn btn-secondary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

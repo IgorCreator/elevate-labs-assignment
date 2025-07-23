@@ -1,0 +1,56 @@
+<div class="admin-card">
+  <h2>✏️ Edit Game Event</h2>
+
+  <%= form_with model: [:admin, @game_event], method: :post, local: true do |form| %>
+    <% if @game_event.errors.any? %>
+      <div class="alert alert-danger">
+        <h4>Please fix the following errors:</h4>
+        <ul>
+          <% @game_event.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= form.label :user_id, "User" %>
+      <%= form.select :user_id,
+          options_from_collection_for_select(@users, :id, :email, @game_event.user_id),
+          { prompt: "Select a user" },
+          class: "form-control",
+          required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :game_name, "Game" %>
+      <%= form.select :game_name,
+          options_for_select(@available_games, @game_event.game_name),
+          { prompt: "Select a game" },
+          class: "form-control",
+          required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :event_type, "Event Type" %>
+      <%= form.select :event_type,
+          options_for_select([["COMPLETED", "COMPLETED"]], @game_event.event_type),
+          { prompt: "Select event type" },
+          class: "form-control",
+          required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :occurred_at, "Occurred At" %>
+      <%= form.datetime_local_field :occurred_at,
+          value: @game_event.occurred_at&.strftime("%Y-%m-%dT%H:%M"),
+          class: "form-control",
+          required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.submit "Update Game Event", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_game_event_path(@game_event), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

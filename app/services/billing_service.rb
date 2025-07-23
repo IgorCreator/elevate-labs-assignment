@@ -7,7 +7,12 @@ class BillingService
       cache_key = "subscription_status:#{user_id}"
 
       cached_status = Rails.cache.read(cache_key)
-      return cached_status if cached_status
+      if cached_status
+        Rails.logger.info "💾 BillingService: Using CACHED status for user #{user_id}"
+        return cached_status
+      end
+
+      Rails.logger.info "💾 BillingService: Cache MISS for user #{user_id}, making network call"
 
       begin
         subscription_status = fetch_from_billing_service(user_id)
@@ -17,6 +22,8 @@ class BillingService
           subscription_status,
           expires_in: cache_expiration_time
         )
+
+        Rails.logger.info "💾 BillingService: Cached fresh status for user #{user_id}"
 
         subscription_status
       rescue BillingServiceError => e
@@ -30,9 +37,9 @@ class BillingService
       end
     end
 
-    private
-
     def fetch_from_billing_service(user_id)
+      Rails.logger.info "🌐 BillingService: Making NETWORK CALL to billing service for user #{user_id}"
+
       uri = URI("#{base_url}/users/#{user_id}/billing")
 
       http = Net::HTTP.new(uri.host, uri.port)
@@ -46,6 +53,8 @@ class BillingService
 
       response = http.request(request)
 
+      Rails.logger.info "🌐 BillingService: Network call completed for user #{user_id} - Status: #{response.code}"
+
       handle_response(response, user_id)
     rescue BillingServiceError
       raise
@@ -58,9 +67,12 @@ class BillingService
     end
 
     def handle_response(response, user_id)
+      Rails.logger.debug "BillingService response for user #{user_id}: #{response.code} - #{response.body}"
+
       case response.code.to_i
       when 200
         parsed_response = JSON.parse(response.body)
+        Rails.logger.debug "BillingService parsed response: #{parsed_response}"
         parsed_response["subscription_status"]
       when 401
         raise BillingServiceError.new("Unauthorized access to billing service", :unauthorized)
@@ -115,6 +127,8 @@ class BillingService
        Rails.application.credentials.billing_service&.dig(:open_timeout_seconds) ||
        5).to_i
     end
+
+    private
 
     def raise_missing_config_error(env_var)
       raise BillingServiceError.new(

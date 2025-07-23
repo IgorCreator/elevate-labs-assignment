@@ -8,6 +8,7 @@ class Api::GameEventsController < ApplicationController
     @game_event = current_user.game_events.build(game_event_params_mapped)
 
     if @game_event.save
+      ApiLoggerService.log_request(current_user, "POST /api/user/game_events", 201)
       render json: {
         message: "Game event created successfully",
         game_event: {
@@ -19,11 +20,13 @@ class Api::GameEventsController < ApplicationController
         }
       }, status: :created
     else
+      ApiLoggerService.log_request(current_user, "POST /api/user/game_events", 422, nil, StandardError.new("Validation failed"))
       render json: {
         errors: @game_event.errors.full_messages
       }, status: :unprocessable_entity
     end
   rescue ActionController::ParameterMissing => e
+    ApiLoggerService.log_request(current_user, "POST /api/user/game_events", 400, nil, e)
     render json: {
       error: e.message
     }, status: :bad_request

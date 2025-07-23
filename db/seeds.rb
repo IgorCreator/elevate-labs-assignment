@@ -11,10 +11,11 @@ puts "🌱 Seeding database..."
 
 test_users = [
   { id: 1, email: "user001@example.com", password: "password123!" },
+  { id: 2, email: "user002@example.com", password: "password123!" },
   { id: 3, email: "user003@example.com", password: "password123!" },
+  { id: 4, email: "user004@example.com", password: "password123!" },
   { id: 5, email: "user005@example.com", password: "password123!" },
-  { id: 10, email: "user010@example.com", password: "password123!" },
-  { id: 20, email: "user020@example.com", password: "password123!" },
+  { id: 99, email: "user099@example.com", password: "password123!" },
   { id: 500, email: "user500@example.com", password: "password123!" }
 ]
 
@@ -111,6 +112,40 @@ puts "\n🎮 Game events by game:"
 GameEvent.group(:game_name).count.each do |game, count|
   puts "  #{game}: #{count} completions"
 end
+
+# Create admin user for admin interface
+admin_user = User.find_by(email: 'admin@elevate.com')
+if admin_user
+  puts "✅ Admin user already exists: #{admin_user.email}"
+else
+  admin_user = User.create!(
+    email: 'admin@elevate.com',
+    password: 'Admin123!',
+    password_confirmation: 'Admin123!'
+  )
+  puts "✅ Created Admin User: #{admin_user.email}"
+end
+
+# Fix PostgreSQL sequences to prevent ID conflicts
+def fix_sequences
+  return unless ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
+
+  # Fix users sequence
+  existing_user_ids = User.pluck(:id).sort
+  next_user_id = 1
+  existing_user_ids.each { |id| break if id > next_user_id; next_user_id = id + 1 }
+  ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', #{next_user_id}, false)")
+  puts "🔧 Fixed users sequence to: #{next_user_id}"
+
+  # Fix game_events sequence
+  existing_event_ids = GameEvent.pluck(:id).sort
+  next_event_id = 1
+  existing_event_ids.each { |id| break if id > next_event_id; next_event_id = id + 1 }
+  ActiveRecord::Base.connection.execute("SELECT setval('game_events_id_seq', #{next_event_id}, false)")
+  puts "🔧 Fixed game_events sequence to: #{next_event_id}"
+end
+
+fix_sequences
 
 puts "\n🧪 Ready for Testing!"
 puts "Use the JWT tokens above to test different billing service error scenarios."

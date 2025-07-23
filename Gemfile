@@ -20,6 +20,9 @@ gem "jwt"
 # CORS
 gem "rack-cors"
 
+# Admin Interface
+gem "kaminari"
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "brakeman", require: false

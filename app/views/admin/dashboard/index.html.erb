@@ -1,0 +1,81 @@
+<div class="admin-card">
+  <h2>📊 Dashboard Overview</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number"><%= @total_users %></div>
+      <div class="stat-label">Total Users</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @total_game_events %></div>
+      <div class="stat-label">Total Game Events</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @games_played_today %></div>
+      <div class="stat-label">Games Played Today</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-number"><%= @users_created_today %></div>
+      <div class="stat-label">New Users Today</div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <h2>👥 Recent Users</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @recent_users.each do |user| %>
+        <tr>
+          <td><%= user.id %></td>
+          <td><%= user.email %></td>
+          <td><%= user.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <%= link_to "View", admin_user_path(user), class: "btn btn-secondary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "View All Users", admin_users_path, class: "btn btn-primary" %>
+</div>
+
+<div class="admin-card">
+  <h2>🎮 Recent Game Events</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Game</th>
+        <th>Event Type</th>
+        <th>Occurred At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @recent_events.each do |event| %>
+        <tr>
+          <td><%= event.user.email %></td>
+          <td><%= event.game_name %></td>
+          <td><%= event.event_type %></td>
+          <td><%= event.occurred_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <%= link_to "View", admin_game_event_path(event), class: "btn btn-secondary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "View All Events", admin_game_events_path, class: "btn btn-primary" %>
+</div>

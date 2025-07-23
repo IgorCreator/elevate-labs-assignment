@@ -1,0 +1,167 @@
+<div class="admin-card">
+  <% if params[:subscription_refreshed] == 'true' %>
+    <div class="alert alert-success" style="margin-bottom: 1rem; padding: 0.75rem; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; color: #155724;">
+      <strong>✅ Success:</strong> Subscription status has been refreshed from the billing service.
+    </div>
+  <% end %>
+
+  <% if params[:cache_cleared] == 'true' %>
+    <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 4px; color: #0c5460;">
+      <strong>🗑️ Cache Cleared:</strong> Subscription cache has been cleared. Fresh network request have been made.
+    </div>
+  <% end %>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2>👤 User Details: <%= @user.email %></h2>
+    <div style="display: flex; gap: 0.5rem;">
+      <% if @prev_user %>
+        <%= link_to "← Previous (#{@prev_user.id})", admin_user_path(@prev_user), class: "btn btn-secondary", id: "prev-user" %>
+      <% end %>
+
+      <% if @next_user %>
+        <%= link_to "Next (#{@next_user.id}) →", admin_user_path(@next_user), class: "btn btn-secondary", id: "next-user" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <div>
+      <h3>Basic Information</h3>
+      <table class="table">
+        <tr>
+          <td><strong>ID:</strong></td>
+          <td><%= @user.id %></td>
+        </tr>
+        <tr>
+          <td><strong>Email:</strong></td>
+          <td><%= @user.email %></td>
+        </tr>
+        <tr>
+          <td><strong>Password Hash:</strong></td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="password-hash" style="font-family: monospace; background: #f8f9fa; padding: 0.25rem 0.5rem; border-radius: 3px; filter: blur(5px);"><%= @user.password_digest %></span>
+              <button type="button" onclick="togglePasswordHash()" class="btn btn-sm btn-secondary">👁️ Show</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Created:</strong></td>
+          <td><%= @user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        </tr>
+        <tr>
+          <td><strong>Updated:</strong></td>
+          <td><%= @user.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        </tr>
+      </table>
+    </div>
+
+    <div>
+      <h3>Subscription Status</h3>
+      <div style="padding: 1rem; background-color: #f8f9fa; border-radius: 4px;">
+        <strong>Status:</strong> <%= @subscription_status %>
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <%= form_with url: refresh_subscription_admin_user_path(@user), method: :post, local: true, style: "display: inline;" do |form| %>
+            <%= form.submit "🔄 Update Subscription Status (call Billing)", class: "btn btn-info" %>
+          <% end %>
+          <%= form_with url: clear_subscription_cache_admin_user_path(@user), method: :post, local: true, style: "display: inline;" do |form| %>
+            <%= form.submit "🗑️ Clear Cache", class: "btn btn-warning" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Response JSON Section -->
+  <div class="admin-card" style="margin-bottom: 2rem;">
+    <h3>📋 API Response JSON (as returned by /api/user endpoint)</h3>
+    <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 1rem; font-family: monospace; font-size: 14px; white-space: pre-wrap; overflow-x: auto;">
+<%= JSON.pretty_generate(@api_response) %>
+    </div>
+    <div style="margin-top: 0.5rem; font-size: 12px; color: #6c757d;">
+      💡 This is the exact JSON response that would be returned by the /api/user endpoint (using same logic).
+    </div>
+  </div>
+
+  <div style="margin-bottom: 2rem;">
+    <h3>📊 User Statistics</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number"><%= @user_stats[:total_games_played] || 0 %></div>
+        <div class="stat-label">Total Games Played</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user_stats[:stats]&.keys&.count || 0 %></div>
+        <div class="stat-label">Unique Games</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user_stats[:total_events] || 0 %></div>
+        <div class="stat-label">Total Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><%= @user_stats[:last_activity]&.strftime("%Y-%m-%d") || "Never" %></div>
+        <div class="stat-label">Last Activity</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 2rem;">
+    <h3>🎮 Recent Game Events</h3>
+    <% if @recent_events.any? %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Game</th>
+            <th>Event Type</th>
+            <th>Occurred At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_events.each do |event| %>
+            <tr>
+              <td><%= event.game_name %></td>
+              <td><%= event.event_type %></td>
+              <td><%= event.occurred_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p style="color: #6c757d; font-style: italic;">No game events recorded yet.</p>
+    <% end %>
+  </div>
+
+  <div style="margin-top: 2rem;">
+    <%= link_to "← Back to Users", admin_users_path, class: "btn btn-secondary" %>
+    <%= link_to "Edit User", edit_admin_user_path(@user), class: "btn btn-primary" %>
+  </div>
+
+  <% if @prev_user || @next_user %>
+    <script>
+      document.addEventListener('keydown', function(event) {
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+
+        if (event.key === 'ArrowLeft' && document.getElementById('prev-user')) {
+          document.getElementById('prev-user').click();
+        } else if (event.key === 'ArrowRight' && document.getElementById('next-user')) {
+          document.getElementById('next-user').click();
+        }
+      });
+    </script>
+  <% end %>
+
+  <script>
+    function togglePasswordHash() {
+      const hashElement = document.getElementById('password-hash');
+      const button = event.target;
+
+      if (hashElement.style.filter === 'blur(5px)') {
+        hashElement.style.filter = 'none';
+        button.textContent = '👁️ Hide';
+      } else {
+        hashElement.style.filter = 'blur(5px)';
+        button.textContent = '👁️ Show';
+      }
+    }
+  </script>
+</div>

@@ -108,17 +108,17 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 5. Phase 5 - Admin UI & Endpoints
+## [x] 5. Phase 5 - Admin UI & Endpoints
 
-- [ ] 5.1 Implement /admin authentication and session management
-- [ ] 5.2 Create basic /admin UI (Rails views or React, etc.)
-- [ ] 5.3 Admin CRUD for users (list, create, update, delete)
-- [ ] 5.4 Admin CRUD for game events (list, create, update, delete)
-- [ ] 5.5 Admin CRUD for game names/categories (if needed)
-- [ ] 5.6 Admin view for user stats and subscription status
-- [ ] 5.7 Admin view for API logs/errors
-- [ ] 5.8 Add tests for admin endpoints and UI
-- [ ] 5.9 Update README with admin UI/endpoint design decisions
+- [x] 5.1 Implement /admin authentication and session management
+- [x] 5.2 Create basic /admin UI (Rails views or React, etc.)
+- [x] 5.3 Admin CRUD for users (list, create, update, delete)
+- [x] 5.4 Admin CRUD for game events (list, create, update, delete)
+- [x] 5.5 Admin CRUD for game names/categories (if needed)
+- [x] 5.6 Admin view for user stats and subscription status
+- [x] 5.7 Admin view for API logs/errors
+- [x] 5.8 Add tests for admin endpoints and UI
+- [x] 5.9 Update README with admin UI/endpoint design decisions
 
 ---
 

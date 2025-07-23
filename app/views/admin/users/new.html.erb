@@ -1,0 +1,58 @@
+<div class="admin-card">
+  <h2>➕ Create New User</h2>
+
+  <%= form_with model: [:admin, @user], method: :post, local: true do |form| %>
+    <% if @user.errors.any? %>
+      <div class="alert alert-danger">
+        <h4>Please fix the following errors:</h4>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= form.label :email %>
+      <%= form.email_field :email, class: "form-control", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :password %>
+      <div style="position: relative;">
+        <%= form.password_field :password, class: "form-control", required: true, id: "password-field" %>
+        <button type="button" onclick="togglePassword('password-field')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px;">👁️</button>
+      </div>
+      <small>Minimum 8 characters, must include a symbol</small>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :password_confirmation %>
+      <div style="position: relative;">
+        <%= form.password_field :password_confirmation, class: "form-control", required: true, id: "password-confirmation-field" %>
+        <button type="button" onclick="togglePassword('password-confirmation-field')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px;">👁️</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= form.submit "Create User", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_users_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+
+  <script>
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const button = event.target;
+
+      if (field.type === 'password') {
+        field.type = 'text';
+        button.textContent = '🙈';
+      } else {
+        field.type = 'password';
+        button.textContent = '👁️';
+      }
+    }
+  </script>
+</div>
