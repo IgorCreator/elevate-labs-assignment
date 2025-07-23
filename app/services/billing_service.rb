@@ -2,7 +2,12 @@ require "net/http"
 require "json"
 
 class BillingService
+  # Service class for integrating with external billing API
+  # Handles caching, error handling, and graceful degradation
   class << self
+    # Get subscription status for a user with caching
+    # Returns cached value if available, otherwise makes network call
+    # Falls back to stale cache on service failures
     def get_subscription_status(user_id)
       cache_key = "subscription_status:#{user_id}"
 
@@ -37,6 +42,8 @@ class BillingService
       end
     end
 
+    # Make direct network call to billing service (bypasses cache)
+    # Used for admin refresh functionality and testing
     def fetch_from_billing_service(user_id)
       Rails.logger.info "🌐 BillingService: Making NETWORK CALL to billing service for user #{user_id}"
 
@@ -77,23 +84,13 @@ class BillingService
       when 401
         raise BillingServiceError.new("Unauthorized access to billing service", :unauthorized)
       when 404
-        handle_not_found_error(user_id)
+        raise BillingServiceError.new("User not found in billing system", :not_found)
       when 503
         raise BillingServiceError.new("Billing service temporarily unavailable", :service_unavailable)
       when 500, 502, 504
         raise BillingServiceError.new("Billing service error", :service_unavailable)
       else
         raise BillingServiceError.new("Unexpected billing service response: #{response.code}", :unexpected_error)
-      end
-    end
-
-    # Business rule: User ID=5 and others <= 100 are intermittent failures
-    # User ID > 100 are true not found errors
-    def handle_not_found_error(user_id)
-      if user_id.to_i > 100
-        raise BillingServiceError.new("User not found in billing system", :not_found)
-      else
-        raise BillingServiceError.new("Intermittent billing service failure", :intermittent_failure)
       end
     end
 

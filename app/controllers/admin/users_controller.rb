@@ -14,11 +14,7 @@ class Admin::UsersController < Admin::BaseController
     @subscription_status = if params[:fresh_status]
       params[:fresh_status]
     else
-      begin
-        BillingService.get_subscription_status(@user.id)
-      rescue BillingService::BillingServiceError => e
-        "Error: #{e.error_type}"
-      end
+      safe_subscription_status(@user.id)
     end
 
     @recent_events = @user.game_events.order(occurred_at: :desc).limit(10)
@@ -39,7 +35,7 @@ class Admin::UsersController < Admin::BaseController
     @user = User.new(user_params)
 
     if @user.save
-      AdminActivityLoggerService.log_activity(
+      Logging::AdminActivityLoggerService.log_activity(
         current_admin_user,
         "create",
         "user",
@@ -60,7 +56,7 @@ class Admin::UsersController < Admin::BaseController
     if params[:commit] == "Delete"
       user_email = @user.email
       @user.destroy
-      AdminActivityLoggerService.log_activity(
+      Logging::AdminActivityLoggerService.log_activity(
         current_admin_user,
         "delete",
         "user",
@@ -70,7 +66,7 @@ class Admin::UsersController < Admin::BaseController
       redirect_to admin_users_path
     else
       if @user.update(user_params)
-        AdminActivityLoggerService.log_activity(
+        Logging::AdminActivityLoggerService.log_activity(
           current_admin_user,
           "update",
           "user",
@@ -87,7 +83,7 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     user_email = @user.email
     @user.destroy
-    AdminActivityLoggerService.log_activity(
+    Logging::AdminActivityLoggerService.log_activity(
       current_admin_user,
       "delete",
       "user",
@@ -98,12 +94,7 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def refresh_subscription
-    @subscription_status = begin
-      BillingService.fetch_from_billing_service(@user.id)
-    rescue BillingService::BillingServiceError => e
-      "Error: #{e.error_type}"
-    end
-
+    @subscription_status = safe_fetch_subscription_status(@user.id)
     redirect_to admin_user_path(@user, subscription_refreshed: true)
   end
 
@@ -112,11 +103,7 @@ class Admin::UsersController < Admin::BaseController
     Rails.cache.delete(cache_key)
 
     # Get fresh subscription status after clearing cache
-    @subscription_status = begin
-      BillingService.fetch_from_billing_service(@user.id)
-    rescue BillingService::BillingServiceError => e
-      "Error: #{e.error_type}"
-    end
+    @subscription_status = safe_fetch_subscription_status(@user.id)
 
     redirect_to admin_user_path(@user, cache_cleared: true, fresh_status: @subscription_status)
   end

@@ -36,7 +36,7 @@ class Admin::GameEventsController < Admin::BaseController
     ]
 
     if @game_event.save
-      AdminActivityLoggerService.log_activity(
+      Logging::AdminActivityLoggerService.log_activity(
         current_admin_user,
         "create",
         "game_event",
@@ -62,7 +62,7 @@ class Admin::GameEventsController < Admin::BaseController
     if params[:commit] == "Delete"
       event_details = { game_name: @game_event.game_name, user_email: @game_event.user.email }
       @game_event.destroy
-      AdminActivityLoggerService.log_activity(
+      Logging::AdminActivityLoggerService.log_activity(
         current_admin_user,
         "delete",
         "game_event",
@@ -78,7 +78,7 @@ class Admin::GameEventsController < Admin::BaseController
       ]
 
       if @game_event.update(game_event_params)
-        AdminActivityLoggerService.log_activity(
+        Logging::AdminActivityLoggerService.log_activity(
           current_admin_user,
           "update",
           "game_event",
@@ -95,7 +95,7 @@ class Admin::GameEventsController < Admin::BaseController
   def destroy
     event_details = { game_name: @game_event.game_name, user_email: @game_event.user.email }
     @game_event.destroy
-    AdminActivityLoggerService.log_activity(
+    Logging::AdminActivityLoggerService.log_activity(
       current_admin_user,
       "delete",
       "game_event",

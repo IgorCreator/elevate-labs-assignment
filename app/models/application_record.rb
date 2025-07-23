@@ -6,7 +6,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   private
 
-      def fix_sequence_if_needed
+  def fix_sequence_if_needed
     return unless self.class.connection.adapter_name.downcase.include?("postgresql")
 
     sequence_name = "#{self.class.table_name}_id_seq"

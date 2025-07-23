@@ -1,5 +1,8 @@
 class JwtService
+  # Service for JWT token generation and validation
+  # Uses HS256 algorithm with configurable expiration
   class << self
+    # Generate JWT token for a user with standard claims
     def generate_token(user)
       encode({
         user_id: user.id,

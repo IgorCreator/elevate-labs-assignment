@@ -22,5 +22,23 @@ class Admin::BaseController < ActionController::Base
     @current_admin_user ||= User.find_by(id: session[:admin_id]) if session[:admin_id]
   end
 
+  # Helper method to safely get subscription status with error handling
+  def safe_subscription_status(user_id)
+    begin
+      BillingService.get_subscription_status(user_id)
+    rescue BillingService::BillingServiceError => e
+      "Error: #{e.error_type}"
+    end
+  end
+
+  # Helper method to safely fetch fresh subscription status
+  def safe_fetch_subscription_status(user_id)
+    begin
+      BillingService.fetch_from_billing_service(user_id)
+    rescue BillingService::BillingServiceError => e
+      "Error: #{e.error_type}"
+    end
+  end
+
   helper_method :admin_signed_in?, :current_admin_user
 end

@@ -1,16 +1,27 @@
 #!/usr/bin/env ruby
 
 # Standalone script to test Users API functionality
-# Usage: ruby script/test_users_api.rb [api|direct|both]
-#   api   - Test via HTTP API calls (requires server running)
-#   direct - Test via direct service calls
-#   both  - Test both methods (default)
+#
+# HOW TO RUN:
+# ===========
+# 1. Start the Rails server: rails server
+# 2. In another terminal, run one of these commands:
+#
+# EXAMPLES:
+#   ruby script/test_users_api.rb api      # Test API endpoints via HTTP
+#   ruby script/test_users_api.rb direct   # Test services directly (no server needed)
+#   ruby script/test_users_api.rb          # Test both methods
+#
+# PREREQUISITES:
+# - Rails server running (for 'api' or 'both' modes)
+# - Database with test users (IDs: 1, 2, 3, 4, 5, 99, 500)
+# - Billing service configured
 
 require_relative '../config/environment'
 
 class UsersApiTester
   def initialize
-    @test_user_ids = [1, 2, 3, 4, 5, 99, 500 ]
+    @test_user_ids = [ 1, 2, 3, 4, 5, 99, 500 ]
   end
 
   def run_tests(test_type = 'both')

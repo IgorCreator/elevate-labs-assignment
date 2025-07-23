@@ -2,7 +2,44 @@
 
 A Rails API application for managing user game events and subscriptions, with an admin interface for data management.
 
-## Features
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Ruby 3.3.5
+- PostgreSQL
+- Redis (for caching)
+
+### Setup
+
+1. **Clone and install dependencies:**
+
+   ```bash
+   bundle install
+   ```
+
+2. **Set up database:**
+
+   ```bash
+   rails db:create db:migrate db:seed
+   ```
+
+3. **Start the server:**
+
+   ```bash
+   rails server
+   ```
+
+4. **Access the application:**
+   - **API**: http://localhost:3000/api
+   - **Admin**: http://localhost:3000/admin/login
+
+### Admin Access
+
+- **Email**: admin@elevate.com
+- **Password**: Admin123!
+
+## 📋 Features
 
 ### API Endpoints
 
@@ -13,176 +50,78 @@ A Rails API application for managing user game events and subscriptions, with an
 
 ### Admin Interface
 
-- **Admin Login**: `GET /admin/login`
-- **Admin Dashboard**: `GET /admin`
-- **User Management**: `GET /admin/users`
-- **Game Events Management**: `GET /admin/game_events`
-- **Statistics**: `GET /admin/stats`
-- **Activity Logs**: `GET /admin/logs`
+- **Dashboard**: Overview and statistics
+- **User Management**: Create, edit, delete users
+- **Game Events**: Manage game activities
+- **Activity Logs**: Monitor system activity
 
-## Quick Start
+## 🧪 Testing
 
-### Prerequisites
+### Quick API Testing with cURL
 
-- Ruby 3.3.5
-- PostgreSQL
-- Redis (for caching)
-
-### Setup
-
-1. Clone the repository
-2. Install dependencies: `bundle install`
-3. Set up database: `rails db:create db:migrate db:seed`
-4. Start the server: `rails server`
-
-### Admin Access
-
-- **URL**: http://localhost:3000/admin/login
-- **Email**: admin@elevate.com
-- **Password**: Admin123!
-
-## API Documentation
-
-### Authentication
-
-All API endpoints (except registration and login) require JWT authentication. Include the token in the Authorization header:
-
-```
-Authorization: Bearer <your_jwt_token>
-```
-
-### User Registration
+#### Manual Testing
 
 ```bash
-POST /api/user
-Content-Type: application/json
+# 1. Register a new user
+curl -X POST http://localhost:3000/api/user \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com", "password": "password123!"}' | jq
 
-{
-  "email": "user@example.com",
-  "password": "password123!"
-}
+# 2. Login and get token
+curl -X POST http://localhost:3000/api/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com", "password": "password123!"}' | jq
+
+# 3. Get user profile (replace YOUR_TOKEN)
+curl -X GET http://localhost:3000/api/user \
+  -H "Authorization: Bearer YOUR_TOKEN" | jq
+
+# 4. Create game event (replace YOUR_TOKEN)
+curl -X POST http://localhost:3000/api/user/game_events \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"game_event": {"game_name": "Wordbend", "type": "COMPLETED", "occurred_at": "2025-01-22T10:00:00.000Z"}}' | jq
 ```
 
-### User Login
+### Automated Testing
 
 ```bash
-POST /api/sessions
-Content-Type: application/json
+# Run all tests
+bundle exec rspec
 
-{
-  "email": "user@example.com",
-  "password": "password123!"
-}
-```
-
-### Create Game Event
-
-```bash
-POST /api/user/game_events
-Authorization: Bearer <jwt_token>
-Content-Type: application/json
-
-{
-    "game_name": "Brevity",
-  "event_type": "COMPLETED",
-  "occurred_at": "2024-01-15T10:30:00Z"
-}
-```
-
-### Get User Profile
-
-```bash
-GET /api/user
-Authorization: Bearer <jwt_token>
-```
-
-## Admin Interface
-
-The admin interface provides a web-based UI for managing users, game events, and viewing statistics.
-
-### Features
-
-- **Dashboard**: Overview of users, game events, and recent activity
-- **User Management**: Create, edit, delete, and view user details
-- **Game Events Management**: Manage game events with filtering and search
-- **Statistics**: Detailed user and game statistics
-- **Activity Logs**: Recent user registrations and game events
-
-### Admin Authentication
-
-- Simple session-based authentication
-- Admin access granted to users with ID 1 or email containing "admin"
-- Secure logout functionality
-
-## External Services
-
-### Billing Service Integration
-
-- Integrates with external billing API for subscription status
-- Caches responses in Redis for performance
-- Handles service failures gracefully
-
-### Supported Games
-
-- Brevity (Writing)
-- Wordbend (Vocabulary/Logic)
-- Retention (Memory)
-- Focus (Concentration)
-- Name Recall (Memory)
-
-## Testing
-
-### API Testing
-
-```bash
 # Test API endpoints
 ruby script/test_users_api.rb
 
-# Test admin interface
-ruby script/test_admin_interface.rb
+# Run linter
+bundle exec rubocop
 ```
 
-### Create Admin User
+For comprehensive API testing with curl use:
 
 ```bash
-ruby script/create_admin_user.rb
+# Run the complete test suite
+./script/test_with_curl.sh
 ```
 
-## Architecture
+**Requirements:**
 
-### Models
+- `jq` for JSON formatting: `brew install jq` (macOS)
+- `rails server` running on `http://localhost:3000`
+- Seeded users from `rails db:seed`
 
-- **User**: Email/password authentication with bcrypt
-- **GameEvent**: Tracks user game activities with validation
+## 📚 Documentation
 
-### Services
+- **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference
+- **[Admin Guide](ADMIN_GUIDE.md)** - Admin interface usage with screenshots
+- **[Development Guide](DEVELOPMENT.md)** - Setup and development workflow
+- **[Architecture](ARCHITECTURE.md)** - Technical design and decisions
+- **[Screenshots](docs/screenshots/)** - Admin interface visual documentation
 
-- **JWTService**: JWT token generation and validation
-- **BillingService**: External billing API integration
-- **UserStatsService**: User statistics calculation
-- **ResponseFormatter**: Consistent API response formatting
-
-### Controllers
-
-- **API Controllers**: Handle API requests with JWT authentication
-- **Admin Controllers**: Handle admin interface with session authentication
-
-## Security Features
-
-- Password hashing with bcrypt
-- JWT token authentication for API
-- Session-based authentication for admin
-- Input validation and sanitization
-- CORS configuration
-- SQL injection protection
-
-## Development
-
-### Environment Variables
+## 🔧 Environment Variables
 
 Create a `.env` file with:
 
-```
+```bash
 JWT_EXPIRATION_HOURS=12
 BILLING_SERVICE_BASE_URL=https://interviews-accounts.elevateapp.com/api/v1
 BILLING_SERVICE_JWT_TOKEN=your_jwt_token
@@ -191,48 +130,24 @@ BILLING_SERVICE_TIMEOUT_SECONDS=5
 BILLING_SERVICE_OPEN_TIMEOUT_SECONDS=5
 ```
 
-### Database
+## 🎯 Key Features
 
-- PostgreSQL for data persistence
-- Redis for caching subscription status
+- **JWT Authentication** for API security
+- **External Billing Integration** with caching and error handling
+- **Admin Interface** for data management
+- **Activity Logging** for audit trails
+- **Comprehensive Testing** with RSpec
+- **Code Quality** with RuboCop linting
 
-## Phase 5 Implementation Summary
+## 📖 Assignment Phases
 
-Phase 5 successfully implemented a complete admin interface with:
+This project implements all required phases from the assignment:
 
-1. **Admin Authentication System**
+- ✅ **Phase 1**: User registration and authentication
+- ✅ **Phase 2**: Game completion ingestion
+- ✅ **Phase 3**: User details and statistics
+- ✅ **Phase 4**: Subscription status integration
+- ✅ **Phase 5**: Admin interface
+- ✅ **Phase 6**: Code quality and documentation
 
-   - Session-based authentication
-   - Login/logout functionality
-   - Access control for admin routes
-
-2. **Admin Dashboard**
-
-   - Overview statistics (users, game events, recent activity)
-   - Navigation to all admin sections
-
-3. **User Management**
-
-   - List all users with pagination
-   - Create, edit, and delete users
-   - View user details with game statistics
-   - Search and filter functionality
-
-4. **Game Events Management**
-
-   - List all game events with filtering
-   - Create, edit, and delete game events
-   - Filter by game name and user
-
-5. **Statistics and Logs**
-
-   - Detailed user statistics with subscription status
-   - Activity logs showing recent registrations and game events
-   - Game and event type statistics
-
-6. **Responsive Design**
-   - Modern, clean UI with CSS styling
-   - Mobile-friendly responsive design
-   - Consistent navigation and layout
-
-The admin interface is now fully functional and provides comprehensive management capabilities for the Elevate Labs application.
+For detailed implementation information, see [ARCHITECTURE.md](ARCHITECTURE.md).

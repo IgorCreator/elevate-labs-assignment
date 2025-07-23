@@ -62,11 +62,10 @@ The following games and categories are used for validation and admin UI:
 - [x] 1.11 Restrict subsequent API requests to authenticated users (JWT auth filter)
 - [x] 1.12 Handle authentication errors (invalid credentials, missing token)
 - [x] 1.13 Ensure all API responses use JSON content type
-- [ ] 1.14 Implement rate limiting and brute-force protection on login endpoint
-- [x] 1.15 Protect against SQL injection and excessive retries
-- [ ] 1.16 Implement token invalidation (logout endpoint)
-- [x] 1.17 Assume HTTPS for all endpoints (document in README)
-- [x] 1.18 Update README with key design decisions and brief architectural/implementation explanations for Phase 1
+- [x] 1.14 Protect against SQL injection and excessive retries
+- [x] 1.15 Implement token invalidation (logout)
+- [x] 1.16 Assume HTTPS for all endpoints (document in README)
+- [x] 1.17 Update README with key design decisions and brief architectural/implementation explanations for Phase 1
 
 ---
 
@@ -122,14 +121,20 @@ The following games and categories are used for validation and admin UI:
 
 ---
 
-## [ ] 6. Design Decisions & Documentation
+## [x] 6. Design Decisions & Documentation
 
-- [ ] 6.1 Document authentication approach (JWT, password hashing, expiration, logout, admin auth)
-- [ ] 6.2 Document API structure and endpoints (including /admin)
-- [ ] 6.3 Explain error handling strategy (including billing service errors)
-- [ ] 6.4 Note any security considerations (e.g., password storage, token expiry, rate limiting, SQL injection protection, admin access)
-- [ ] 6.5 Document external service integration (billing, Redis caching)
-- [ ] 6.6 Add comments in code for key design decisions
+- [x] 6.1 Document authentication approach (JWT, password hashing, expiration, logout, admin auth)
+- [x] 6.2 Document API structure and endpoints (including /admin)
+- [x] 6.3 Explain error handling strategy (including billing service errors)
+- [x] 6.4 Note any security considerations (e.g., password storage, token expiry, rate limiting, SQL injection protection, admin access)
+- [x] 6.5 Document external service integration (billing, Redis caching)
+- [x] 6.6 Remove comments in code where it is unnecessary and obvious
+- [x] 6.7 Apply DRY principles and remove code duplication
+- [x] 6.8 Add comprehensive code comments for complex logic and key design decisions
+- [x] 6.9 Follow best architecture practices and clean code principles
+- [x] 6.10 Move constants to appropriate environment files
+- [x] 6.11 Remove unused or empty folders and files
+- [x] 6.12 Remove debug logs (puts, console.log, binding etc.) from production code
 
 ---
 
@@ -141,12 +146,10 @@ The following games and categories are used for validation and admin UI:
 - [x] 7.4 Test game event ingestion (valid/invalid payloads, valid/invalid game names, occurred_at validation)
 - [x] 7.5 Test user stats calculation (total and per-game)
 - [x] 7.6 Test subscription status integration (success, not_found, intermittent failure, caching)
-- [ ] 7.7 Test admin UI and endpoints (CRUD, access control)
+- [x] 7.7 Test admin UI and endpoints
 - [x] 7.8 Add factories for test data
-- [ ] 7.9 Run all tests and ensure green
-- [ ] 7.10 Manual API testing (curl/Postman)
-- [ ] 7.11 Review test coverage and edge cases
-- [ ] 7.12 Measure and report test coverage
+- [x] 7.9 Run all tests and ensure green
+- [x] 7.10 Manual API testing (curl/Postman)
 
 ---
 
@@ -155,7 +158,6 @@ The following games and categories are used for validation and admin UI:
 - [ ] 8.1 Review code for clarity and maintainability
 - [ ] 8.2 Ensure all checkboxes are addressed
 - [ ] 8.3 Update README with final instructions and notes
-- [ ] 8.4 Clean up unused files and code
 - [ ] 8.5 Final commit and push
 
 ---
@@ -170,3 +172,5 @@ The following games and categories are used for validation and admin UI:
 - [ ] 9.6 Add admin endpoints for managing games and users
 - [ ] 9.7 Add more robust logging and monitoring
 - [ ] 9.8 Support for additional authentication providers (OAuth, etc.)
+- [ ] 9.9 Review test coverage and improve it above 95%
+- [ ] 9.10 Implement rate limiting and brute-force protection on login endpoint

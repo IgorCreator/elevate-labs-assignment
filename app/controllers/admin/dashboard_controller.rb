@@ -16,11 +16,7 @@ class Admin::DashboardController < Admin::BaseController
     # Calculate user stats
     @user_stats = @users.map do |user|
       stats = UserStatsService.calculate(user)
-      subscription_status = begin
-        BillingService.get_subscription_status(user.id)
-      rescue BillingService::BillingServiceError
-        "Error"
-      end
+      subscription_status = safe_subscription_status(user.id)
 
       {
         user: user,
@@ -38,7 +34,7 @@ class Admin::DashboardController < Admin::BaseController
     @recent_activity = []
 
     # Add admin activity logs
-    admin_logs = AdminActivityLoggerService.get_recent_logs(20)
+    admin_logs = Logging::AdminActivityLoggerService.get_recent_logs(20)
     admin_logs.each do |log|
       @recent_activity << {
         type: "admin_activity",
@@ -55,7 +51,7 @@ class Admin::DashboardController < Admin::BaseController
     end
 
     # Add API request logs
-    api_logs = ApiLoggerService.get_recent_logs(20)
+    api_logs = Logging::ApiLoggerService.get_recent_logs(20)
     api_logs.each do |log|
       @recent_activity << {
         type: "api_request",
