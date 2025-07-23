@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: elevate_labs_assignment_production
+      POSTGRES_USER: elevate_labs_assignment
+      POSTGRES_PASSWORD: password123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  web:
+    build: .
+    ports:
+      - '3000:80'
+    environment:
+      RAILS_MASTER_KEY: 37f444a388f0f7222377c5e1b9fdc653
+      DATABASE_URL: postgres://elevate_labs_assignment:password123@db:5432/elevate_labs_assignment_production
+      ELEVATE_LABS_ASSIGNMENT_DATABASE_PASSWORD: password123
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+    depends_on:
+      - db
+    command: ./bin/rails server -b 0.0.0.0 -p 80
+
+volumes:
+  postgres_data:
