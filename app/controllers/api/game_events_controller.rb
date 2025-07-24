@@ -1,6 +1,8 @@
 class Api::GameEventsController < ApplicationController
   before_action :authenticate_request!
 
+  wrap_parameters false
+
   def create
     game_event_params_mapped = game_event_params
     game_event_params_mapped[:event_type] = game_event_params_mapped.delete(:type) if game_event_params_mapped[:type]

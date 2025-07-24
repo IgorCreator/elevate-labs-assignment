@@ -342,6 +342,102 @@ rails runner "puts ActiveRecord::Base.connection.active?"
 rails runner "puts Rails.cache.write('test', 'value')"
 ```
 
+## Docker Setup
+
+### Prerequisites
+
+- **Docker** and **Docker Compose** installed
+- **Rails master key** (found in `config/credentials.yml.enc` or generate with `rails credentials:edit`)
+
+### Quick Start
+
+1. **Set up environment variables:**
+
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+
+   # Edit .env and set your Rails master key
+   # You can find your master key in config/credentials.yml.enc
+   # or generate a new one with: rails credentials:edit
+   ```
+
+2. **Build and start containers:**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Set up the database (first time only):**
+
+   ```bash
+   # In a new terminal
+   docker compose exec web rails db:schema:load
+   docker compose exec web rails db:seed
+   ```
+
+4. **Access the application:**
+   ```bash
+   open http://localhost:3000
+   ```
+
+### Environment Variables
+
+The following environment variables can be set in your `.env` file:
+
+```bash
+# Required for production mode
+RAILS_MASTER_KEY=your_rails_master_key_here
+
+# Database configuration (optional - defaults used in docker-compose.yml)
+DATABASE_URL=postgres://elevate_labs_assignment:password123@db:5432/elevate_labs_assignment_production
+ELEVATE_LABS_ASSIGNMENT_DATABASE_PASSWORD=password123
+DATABASE_HOST=db
+DATABASE_PORT=5432
+
+# JWT secret (optional - will be generated if not provided)
+JWT_SECRET_KEY=your_JWT_SECRET_KEY_here
+
+# Billing service configuration (optional - for testing)
+BILLING_SERVICE_URL=https://billing-service.elevate.com
+BILLING_SERVICE_API_KEY=your_billing_service_api_key_here
+```
+
+### Docker Commands
+
+```bash
+# Start services
+docker-compose up
+
+# Start in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f web
+
+# Stop services
+docker-compose down
+
+# Rebuild containers
+docker-compose up --build
+
+# Access Rails console
+docker compose exec web rails console
+
+# Run database commands
+docker compose exec web rails db:migrate
+docker compose exec web rails db:seed
+
+# Run tests
+docker compose exec web bundle exec rspec
+```
+
+### Security Notes
+
+- **Never commit your actual `RAILS_MASTER_KEY`** to version control
+- The `.env` file is already in `.gitignore` to prevent accidental commits
+- Use `.env.example` as a template for required environment variables
+
 ## Deployment
 
 ### Environment Variables

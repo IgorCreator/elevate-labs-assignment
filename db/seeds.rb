@@ -118,12 +118,16 @@ admin_user = User.find_by(email: 'admin@elevate.com')
 if admin_user
   puts "✅ Admin user already exists: #{admin_user.email}"
 else
-  admin_user = User.create!(
+  # Use ID 999 to avoid conflicts with test users
+  admin_user = User.new(
+    id: 6,
     email: 'admin@elevate.com',
     password: 'Admin123!',
-    password_confirmation: 'Admin123!'
+    password_confirmation: 'Admin123!',
+    admin: true
   )
-  puts "✅ Created Admin User: #{admin_user.email}"
+  admin_user.save!
+  puts "✅ Created Admin User: #{admin_user.email} (ID: #{admin_user.id})"
 end
 
 # Fix PostgreSQL sequences to prevent ID conflicts

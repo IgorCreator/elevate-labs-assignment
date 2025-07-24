@@ -10,9 +10,7 @@ class Admin::SessionsController < Admin::BaseController
     user = User.find_by(email: params[:email])
 
     if user&.authenticate(params[:password])
-      # For now, we'll use a simple admin check
-      # In production, you'd want a proper admin flag or role system
-      if user.email.include?("admin") # Simple admin check
+      if user.admin?
         session[:admin_id] = user.id
         redirect_to admin_path
       else
